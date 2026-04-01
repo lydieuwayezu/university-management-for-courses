@@ -1,27 +1,18 @@
-
-
-
-	
-
 import { useState, useEffect } from 'react';
 
-const EMPTY = { courseCode: '', courseName: '', description: '', credits: '', department: '', instructor: '' };
-
 export default function CourseForm({ token, course, onSave, onCancel, createCourse, updateCourse }) {
-  const [form, setForm] = useState(EMPTY);
+  const [courseName, setCourseName] = useState('');
+  const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (course) {
-      setForm({
-        courseCode: course.courseCode || '',
-        courseName: course.courseName || '',
-        description: course.description || '',
-        credits: course.credits || '',
-        department: course.department || '',
-        instructor: course.instructor || '',
-      });
+      setCourseName(course.courseName || '');
+      setDescription(course.description || '');
+    } else {
+      setCourseName('');
+      setDescription('');
     }
   }, [course]);
 
@@ -30,9 +21,9 @@ export default function CourseForm({ token, course, onSave, onCancel, createCour
     setError('');
     setLoading(true);
     try {
-      const payload = { ...form, credits: Number(form.credits) };
+      const payload = { courseName, description };
       if (course) {
-        await updateCourse(token, course._id || course.id, payload);
+        await updateCourse(token, course.id || course._id, payload);
       } else {
         await createCourse(token, payload);
       }
@@ -44,18 +35,9 @@ export default function CourseForm({ token, course, onSave, onCancel, createCour
     }
   };
 
-  const fields = [
-    { key: 'courseCode', label: 'Course Code', placeholder: 'e.g. CS101' },
-    { key: 'courseName', label: 'Course Name', placeholder: 'e.g. Introduction to Programming' },
-    { key: 'description', label: 'Description', placeholder: 'Course description...' },
-    { key: 'credits', label: 'Credits', placeholder: 'e.g. 3', type: 'number' },
-    { key: 'department', label: 'Department', placeholder: 'e.g. Computer Science' },
-    { key: 'instructor', label: 'Instructor', placeholder: 'e.g. Dr. Smith' },
-  ];
-
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
         <div className="p-6 border-b border-gray-100">
           <h2 className="text-lg font-semibold text-gray-800">
             {course ? 'Edit Course' : 'Add New Course'}
@@ -67,19 +49,28 @@ export default function CourseForm({ token, course, onSave, onCancel, createCour
               {error}
             </div>
           )}
-          {fields.map(({ key, label, placeholder, type }) => (
-            <div key={key}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-              <input
-                type={type || 'text'}
-                required
-                value={form[key]}
-                onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                placeholder={placeholder}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-          ))}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Course Name</label>
+            <input
+              type="text"
+              required
+              value={courseName}
+              onChange={(e) => setCourseName(e.target.value)}
+              placeholder="e.g. Introduction to Programming"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              required
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe what this course covers..."
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+            />
+          </div>
           <div className="flex gap-3 pt-2">
             <button
               type="button"

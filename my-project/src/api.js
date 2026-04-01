@@ -1,10 +1,8 @@
-
-
 const BASE = 'https://student-management-system-backend.up.railway.app/api';
 
-const headers = (token) => ({
+const authHeaders = (token) => ({
   'Content-Type': 'application/json',
-  ...(token && { Authorization: `Bearer ${token}` }),
+  Authorization: `Bearer ${token}`,
 });
 
 export async function login(email, password) {
@@ -19,14 +17,14 @@ export async function login(email, password) {
 }
 
 export async function getCourses(token) {
-  const res = await fetch(`${BASE}/courses`, { headers: headers(token) });
+  const res = await fetch(`${BASE}/courses`, { headers: authHeaders(token) });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Failed to fetch courses');
   return data;
 }
 
 export async function getCourse(token, id) {
-  const res = await fetch(`${BASE}/courses/${id}`, { headers: headers(token) });
+  const res = await fetch(`${BASE}/courses/${id}`, { headers: authHeaders(token) });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Failed to fetch course');
   return data;
@@ -35,7 +33,7 @@ export async function getCourse(token, id) {
 export async function createCourse(token, course) {
   const res = await fetch(`${BASE}/courses`, {
     method: 'POST',
-    headers: headers(token),
+    headers: authHeaders(token),
     body: JSON.stringify(course),
   });
   const data = await res.json();
@@ -46,7 +44,7 @@ export async function createCourse(token, course) {
 export async function updateCourse(token, id, course) {
   const res = await fetch(`${BASE}/courses/${id}`, {
     method: 'PUT',
-    headers: headers(token),
+    headers: authHeaders(token),
     body: JSON.stringify(course),
   });
   const data = await res.json();
@@ -57,7 +55,7 @@ export async function updateCourse(token, id, course) {
 export async function deleteCourse(token, id) {
   const res = await fetch(`${BASE}/courses/${id}`, {
     method: 'DELETE',
-    headers: headers(token),
+    headers: authHeaders(token),
   });
   if (!res.ok) {
     const data = await res.json();

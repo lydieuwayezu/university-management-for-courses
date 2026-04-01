@@ -1,28 +1,17 @@
-
-
-
-
-
-
 import { useState, useEffect } from 'react';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 
 export default function App() {
-  const [token, setToken] = useState(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('token');
-    if (saved) setToken(saved);
-  }, []);
+  const [token, setToken] = useState(() => sessionStorage.getItem('token'));
 
   const handleLogin = (newToken) => {
-    localStorage.setItem('token', newToken);
+    sessionStorage.setItem('token', newToken);
     setToken(newToken);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     setToken(null);
   };
 

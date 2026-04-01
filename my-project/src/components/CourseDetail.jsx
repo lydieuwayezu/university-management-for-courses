@@ -1,15 +1,11 @@
-
-
-
 export default function CourseDetail({ course, onClose }) {
   if (!course) return null;
 
   const details = [
-    { label: 'Course Code', value: course.courseCode },
-    { label: 'Department', value: course.department },
-    { label: 'Credits', value: course.credits },
-    { label: 'Instructor', value: course.instructor },
-    { label: 'Course ID', value: course._id || course.id },
+    { label: 'Course ID', value: course.id || course._id },
+    { label: 'Status', value: course.supervisorId ? 'Assigned' : 'Unassigned' },
+    { label: 'Created', value: new Date(course.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) },
+    { label: 'Last Updated', value: new Date(course.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) },
   ];
 
   return (
@@ -24,13 +20,13 @@ export default function CourseDetail({ course, onClose }) {
           </button>
         </div>
         <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-1">{course.courseName}</h3>
-          <p className="text-gray-500 text-sm mb-6">{course.description}</p>
-          <div className="grid grid-cols-2 gap-4">
+          <h3 className="text-xl font-bold text-gray-900 mb-2">{course.courseName}</h3>
+          <p className="text-gray-500 text-sm leading-relaxed mb-6">{course.description}</p>
+          <div className="grid grid-cols-2 gap-3">
             {details.map(({ label, value }) => (
               <div key={label} className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500 mb-1">{label}</p>
-                <p className="text-sm font-medium text-gray-800">{value}</p>
+                <p className="text-xs text-gray-400 mb-1">{label}</p>
+                <p className="text-sm font-medium text-gray-800 break-all">{value}</p>
               </div>
             ))}
           </div>

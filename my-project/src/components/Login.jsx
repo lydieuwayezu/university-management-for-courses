@@ -1,15 +1,9 @@
-
-
-
-
-
-
-
 import { useState } from 'react';
 import { login } from '../api';
 
 export default function Login({ onLogin }) {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,8 +12,9 @@ export default function Login({ onLogin }) {
     setError('');
     setLoading(true);
     try {
-      const data = await login(form.email, form.password);
-      const token = data.token || data.accessToken || data.data?.token;
+      const data = await login(email, password);
+      const token = data.accessToken || data.token;
+      if (!token) throw new Error('No token received from server');
       onLogin(token);
     } catch (err) {
       setError(err.message);
@@ -29,7 +24,7 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-14 h-14 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -54,10 +49,10 @@ export default function Login({ onLogin }) {
             <input
               type="email"
               required
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@example.com"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div>
@@ -65,10 +60,10 @@ export default function Login({ onLogin }) {
             <input
               type="password"
               required
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <button
